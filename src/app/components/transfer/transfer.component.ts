@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { TransferService } from 'src/app/services/transfer.service';
 
 
 @Component({
@@ -27,11 +28,14 @@ export class TransferComponent implements OnInit {
     ]
   };
 
-  constructor(private fb: FormBuilder) { }
+  constructor(
+    private fb: FormBuilder,
+    private transferService: TransferService
+  ) { }
 
   ngOnInit(): void {
     this.formSubmitted = false;
-    this.user = {address: '', transferAddress: '', balance: '', amount: '', remarks: ''};
+    this.user = { address: '', transferAddress: '', balance: '', amount: '', remarks: '' };
     this.getAccountAndBalance();
     this.createForms();
   }
@@ -55,9 +59,15 @@ export class TransferComponent implements OnInit {
 
   getAccountAndBalance = () => {
     const that = this;
-    that.user.address = '0xd8d0101f83e79fb4e8d21134f5325e64816bd6a0';
-    that.user.balance = 0;
-    // TODO: fetch data
+    this.transferService.getUserBalance().
+      then(function (retAccount: any) {
+        that.user.address = retAccount.account;
+        that.user.balance = retAccount.balance;
+        console.log('transfer.components :: getAccountAndBalance :: that.user');
+        console.log(that.user);
+      }).catch(function (error) {
+        console.log(error);
+      });
   }
 
   submitForm() {
@@ -68,6 +78,10 @@ export class TransferComponent implements OnInit {
       console.log('transfer.components :: submitForm :: this.userForm.value');
       console.log(this.userForm.value);
       // TODO: service call
+      this.transferService.transferEther(this.userForm.value).
+        then(function () { }).catch(function (error) {
+          console.log(error);
+        });
     }
   }
 
