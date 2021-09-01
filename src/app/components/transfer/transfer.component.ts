@@ -78,6 +78,7 @@ export class TransferComponent implements OnInit {
       console.log('transfer.components :: submitForm :: this.userForm.value');
       console.log(this.userForm.value);
       // TODO: service call
+      console.warn(this.userForm.value)
       this.transferService.transferEther(this.userForm.value).
         then(function () { }).catch(function (error) {
           console.log(error);

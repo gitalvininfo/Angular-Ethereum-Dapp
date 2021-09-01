@@ -104,7 +104,7 @@ export class TransferService {
           value.transferAddress,
           {
             from: that.account,
-            value: value.amount
+            value: +value.amount
           });
       }).then(function(status) {
         if (status) {
